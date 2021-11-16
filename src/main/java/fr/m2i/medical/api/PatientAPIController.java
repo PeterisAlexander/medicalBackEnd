@@ -5,7 +5,6 @@ import fr.m2i.medical.services.PatientService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -16,55 +15,46 @@ import java.util.NoSuchElementException;
 @RestController
 @RequestMapping("/api/patient")
 public class PatientAPIController {
-     PatientService ps;
 
-    public PatientAPIController( PatientService ps) {
+    PatientService ps;
+
+    public PatientAPIController( PatientService ps ){
         this.ps = ps;
     }
 
-    @GetMapping(value = "", produces = "application/json")
-    public Iterable<PatientEntity> getAll() {
+    @GetMapping(value="" , produces = "application/json")
+    public Iterable<PatientEntity> getAll(){
         return ps.findAll();
     }
 
     @GetMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<PatientEntity> get(@PathVariable int id) {
-        try {
+        try{
             PatientEntity p = ps.findPatient(id);
             return ResponseEntity.ok(p);
-        } catch (Exception e) {
+        }catch ( Exception e ){
             return ResponseEntity.notFound().build();
         }
     }
 
-    @DeleteMapping(value = "/delete/{id}", produces = "application/json")
-    public ResponseEntity<Object> delete(@PathVariable int id) {
-        try {
-            ps.delete(id);
-            return ResponseEntity.ok(null);
-        } catch (Exception e) {
-            return  ResponseEntity.notFound().build();
-        }
-    }
-
-    @PostMapping(value = "", consumes = "application/json")
-    public ResponseEntity<PatientEntity> add(@RequestBody PatientEntity p) {
-        System.out.println(p);
+    @PostMapping(value="" , consumes = "application/json")
+    public ResponseEntity<PatientEntity> add(@RequestBody PatientEntity p ){
         try{
-            ps.addPatient(p);
+            ps.addPatient( p );
 
-            // création de l'url d'accès au noupel objet => http://localhost:8080/api/Patient/20
-            URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("{id}").buildAndExpand(p.getId()).toUri();
+            // création de l'url d'accès au nouvel objet => http://localhost:8080/api/ville/20
+            URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand( p.getId() ).toUri();
 
-            return ResponseEntity.created(uri).body(p);
+            return ResponseEntity.created( uri ).body(p);
 
-        } catch (InvalidObjectException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }catch ( InvalidObjectException e ){
+            //return ResponseEntity.badRequest().build();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST , e.getMessage() );
         }
     }
 
-    @PutMapping(value = "/{id}", consumes = "application/json")
-    public void update(@PathVariable int id , @RequestBody PatientEntity p) {
+    @PutMapping(value="/{id}" , consumes = "application/json")
+    public void update( @PathVariable int id , @RequestBody PatientEntity p ){
         try{
             ps.editPatient( id , p );
 
@@ -74,5 +64,16 @@ public class PatientAPIController {
         }catch ( InvalidObjectException e ){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST , e.getMessage() );
         }
+    }
+
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Object> delete(@PathVariable int id) throws Exception {
+        try{
+            ps.delete(id);
+            return ResponseEntity.ok(null);
+        }catch ( Exception e ){
+            return ResponseEntity.notFound().build();
+        }
+
     }
 }

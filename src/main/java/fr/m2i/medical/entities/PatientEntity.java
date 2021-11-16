@@ -5,31 +5,34 @@ import java.sql.Date;
 import java.util.Objects;
 
 @Entity
-@Table(name = "patient", schema = "medical", catalog = "")
+@Table(name = "patient", schema = "medical5", catalog = "")
 public class PatientEntity {
     private int id;
     private String nom;
     private String prenom;
-    private Date datenaissance;
+    private Date dateNaissance;
+    private String email;
+    private String telephone;
     private String adresse;
     private VilleEntity ville;
 
+    public PatientEntity() {
+    }
 
-    public PatientEntity(int id, String nom, String prenom, Date datenaissance, String adresse, VilleEntity ville) {
+    public PatientEntity(int id, String nom, String prenom, Date dateNaissance, String email, String telephone, String adresse, VilleEntity ville) {
         this.id = id;
         this.nom = nom;
         this.prenom = prenom;
-        this.datenaissance = datenaissance;
+        this.dateNaissance = dateNaissance;
+        this.email = email;
+        this.telephone = telephone;
         this.adresse = adresse;
         this.ville = ville;
     }
 
-    public PatientEntity() {
-
-    }
-
     @Id
-    @Column(name = "id")
+    @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getId() {
         return id;
     }
@@ -39,7 +42,7 @@ public class PatientEntity {
     }
 
     @Basic
-    @Column(name = "nom")
+    @Column(name = "nom", nullable = false, length = 100)
     public String getNom() {
         return nom;
     }
@@ -49,7 +52,7 @@ public class PatientEntity {
     }
 
     @Basic
-    @Column(name = "prenom")
+    @Column(name = "prenom", nullable = false, length = 100)
     public String getPrenom() {
         return prenom;
     }
@@ -59,17 +62,37 @@ public class PatientEntity {
     }
 
     @Basic
-    @Column(name = "datenaissance")
-    public Date getDatenaissance() {
-        return datenaissance;
+    @Column(name = "date_naissance", nullable = false)
+    public Date getDateNaissance() {
+        return dateNaissance;
     }
 
-    public void setDatenaissance(Date datenaissance) {
-        this.datenaissance = datenaissance;
+    public void setDateNaissance(Date dateNaissance) {
+        this.dateNaissance = dateNaissance;
     }
 
     @Basic
-    @Column(name = "adresse")
+    @Column(name = "email", nullable = false, length = 100)
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    @Basic
+    @Column(name = "telephone", nullable = false, length = 20)
+    public String getTelephone() {
+        return telephone;
+    }
+
+    public void setTelephone(String telephone) {
+        this.telephone = telephone;
+    }
+
+    @Basic
+    @Column(name = "adresse", nullable = false, length = 100)
     public String getAdresse() {
         return adresse;
     }
@@ -83,12 +106,12 @@ public class PatientEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PatientEntity that = (PatientEntity) o;
-        return id == that.id && Objects.equals(nom, that.nom) && Objects.equals(prenom, that.prenom) && Objects.equals(datenaissance, that.datenaissance) && Objects.equals(adresse, that.adresse);
+        return id == that.id && Objects.equals(nom, that.nom) && Objects.equals(prenom, that.prenom) && Objects.equals(dateNaissance, that.dateNaissance) && Objects.equals(email, that.email) && Objects.equals(telephone, that.telephone) && Objects.equals(adresse, that.adresse);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, nom, prenom, datenaissance, adresse);
+        return Objects.hash(id, nom, prenom, dateNaissance, email, telephone, adresse);
     }
 
     @OneToOne
@@ -99,17 +122,5 @@ public class PatientEntity {
 
     public void setVille(VilleEntity ville) {
         this.ville = ville;
-    }
-
-    @Override
-    public String toString() {
-        return "PatientEntity{" +
-                "id=" + id +
-                ", nom='" + nom + '\'' +
-                ", prenom='" + prenom + '\'' +
-                ", datenaissance=" + datenaissance +
-                ", adresse='" + adresse + '\'' +
-                ", ville=" + ville +
-                '}';
     }
 }

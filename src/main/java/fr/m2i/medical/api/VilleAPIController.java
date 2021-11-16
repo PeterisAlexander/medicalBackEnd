@@ -15,55 +15,48 @@ import java.util.NoSuchElementException;
 @RestController
 @RequestMapping("/api/ville")
 public class VilleAPIController {
-     VilleService vs;
 
-    public VilleAPIController(VilleService vs) {
+    VilleService vs;
+
+    public VilleAPIController( VilleService vs ){
         this.vs = vs;
     }
 
-    @GetMapping(value = "", produces = "application/json")
-    public Iterable<VilleEntity> getAll() {
+    @GetMapping(value="" , produces = "application/json")
+    public Iterable<VilleEntity> getAll(){
         return vs.findAll();
     }
 
     @GetMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<VilleEntity> get(@PathVariable int id) {
-        try {
+        try{
             VilleEntity v = vs.findVille(id);
             return ResponseEntity.ok(v);
-        } catch (Exception e) {
+        }catch ( Exception e ){
             return ResponseEntity.notFound().build();
         }
     }
 
-    @DeleteMapping(value = "/delete/{id}", produces = "application/json")
-    public ResponseEntity<Object> delete(@PathVariable int id) {
-        try {
-            vs.delete(id);
-            return ResponseEntity.ok(null);
-        } catch (Exception e) {
-            return  ResponseEntity.notFound().build();
-        }
-    }
-
-    @PostMapping(value = "", consumes = "application/json")
-    public ResponseEntity<VilleEntity> add(@RequestBody VilleEntity v) {
-        System.out.println(v);
+    @PostMapping(value="" , consumes = "application/json")
+    public ResponseEntity<VilleEntity> add( @RequestBody VilleEntity v ){
+        System.out.println( v );
         try{
-            vs.addVille(v);
+            vs.addVille( v );
 
             // création de l'url d'accès au nouvel objet => http://localhost:8080/api/ville/20
-            URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("{id}").buildAndExpand(v.getId()).toUri();
+            URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand( v.getId() ).toUri();
 
-            return ResponseEntity.created(uri).body(v);
+            return ResponseEntity.created( uri ).body(v);
 
-        } catch (InvalidObjectException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }catch ( InvalidObjectException e ){
+            //return ResponseEntity.badRequest().build();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST , e.getMessage() );
         }
+
     }
 
-    @PutMapping(value = "/{id}", consumes = "application/json")
-    public void update(@PathVariable int id , @RequestBody VilleEntity v) {
+    @PutMapping(value="/{id}" , consumes = "application/json")
+    public void update( @PathVariable int id , @RequestBody VilleEntity v ){
         try{
             vs.editVille( id , v );
 
@@ -74,4 +67,23 @@ public class VilleAPIController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST , e.getMessage() );
         }
     }
+
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Object> delete(@PathVariable int id) {
+        // Check sur l'existance de la ville, si ko => 404 not found
+        try{
+            VilleEntity v = vs.findVille(id);
+        }catch( Exception e ){
+            return ResponseEntity.notFound().build();
+        }
+
+        // si on a un problème à ce niveau => sql exception
+        try{
+            vs.delete(id);
+            return ResponseEntity.ok(null);
+        }catch( Exception e ) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
 }

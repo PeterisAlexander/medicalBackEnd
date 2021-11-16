@@ -4,25 +4,16 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "ville", schema = "medical", catalog = "")
+@Table(name = "ville", schema = "medical5", catalog = "")
 public class VilleEntity {
     private int id;
-    private String pays;
     private String nom;
-    private String codePostal;
-
-    public VilleEntity() {
-    }
-
-    public VilleEntity(int id, String pays, String nom, String codePostal) {
-        this.id = id;
-        this.pays = pays;
-        this.nom = nom;
-        this.codePostal = codePostal;
-    }
+    private int codePostal;
+    private String pays;
 
     @Id
-    @Column(name = "id")
+    @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getId() {
         return id;
     }
@@ -32,17 +23,7 @@ public class VilleEntity {
     }
 
     @Basic
-    @Column(name = "pays")
-    public String getPays() {
-        return pays;
-    }
-
-    public void setPays(String pays) {
-        this.pays = pays;
-    }
-
-    @Basic
-    @Column(name = "nom")
+    @Column(name = "nom", nullable = false, length = 200)
     public String getNom() {
         return nom;
     }
@@ -52,13 +33,23 @@ public class VilleEntity {
     }
 
     @Basic
-    @Column(name = "code_postal")
-    public String getCodePostal() {
+    @Column(name = "code_postal", nullable = false)
+    public int getCodePostal() {
         return codePostal;
     }
 
-    public void setCodePostal(String codePostal) {
+    public void setCodePostal(int codePostal) {
         this.codePostal = codePostal;
+    }
+
+    @Basic
+    @Column(name = "pays", nullable = false, length = 50)
+    public String getPays() {
+        return pays;
+    }
+
+    public void setPays(String pays) {
+        this.pays = pays;
     }
 
     @Override
@@ -66,21 +57,11 @@ public class VilleEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         VilleEntity that = (VilleEntity) o;
-        return id == that.id && Objects.equals(pays, that.pays) && Objects.equals(nom, that.nom) && Objects.equals(codePostal, that.codePostal);
+        return id == that.id && codePostal == that.codePostal && Objects.equals(nom, that.nom) && Objects.equals(pays, that.pays);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, pays, nom, codePostal);
-    }
-
-    @Override
-    public String toString() {
-        return "VilleEntity{" +
-                "id=" + id +
-                ", pays='" + pays + '\'' +
-                ", nom='" + nom + '\'' +
-                ", codePostal='" + codePostal + '\'' +
-                '}';
+        return Objects.hash(id, nom, codePostal, pays);
     }
 }
