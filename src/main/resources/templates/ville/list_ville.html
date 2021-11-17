@@ -5,16 +5,32 @@
 
 <header class="mb-5" th:include="~{ fragments/header::#header }"></header>
 
+<style>
+    .active {
+        background-color: #0d6efb;
+        color: white;
+    }
+</style>
+
 <main class="container">
+    <div class="alert alert-danger" role="alert" th:if="${error != null && error.length() > 0}" th:text="${error}">
+    </div>
+
+    <div class="alert alert-success" role="alert" th:if="${success != null && success.length() > 0}" >
+        Opération effectuée avec succès
+    </div>
+
     <h1>Liste des villes</h1>
 
-    <form th:action="@{/ville}" method="get" style="display: flex; justify-content: space-between; align-items: center">
+    <form action="/ville" method="get" style="display: flex; justify-content: space-between; align-items: center">
         <a href="/ville/add" class="btn btn-primary">Ajouter une ville</a>
         <div class="input-group" style="width: auto">
-            <input type="text" class="form-control" placeholder="Chercher votre ville..." name="search">
-            <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Search</button>
+            <input type="text" class="form-control" placeholder="Chercher votre ville..." th:value="${search}" name="search">
+            <button class="btn btn-outline-secondary" type="submit" id="button-addon2"><i class="fa fa-search" aria-hidden="true"></i></button>
         </div>
     </form>
+
+
 
     <table class="table table-striped">
         <thead>
@@ -28,18 +44,30 @@
         </thead>
 
         <tbody>
-        <tr th:each="ville : ${ villes }">
+        <tr th:each="ville : ${ listVilles }">
             <td th:text="${ ville.id }"></td>
             <td th:text="${ ville.nom }"></td>
             <td th:text="${ ville.codePostal }"></td>
             <td th:text="${ ville.pays }"></td>
             <td>
-                <a th:href="'ville/edit/'+${ville.id}"  class="btn btn-secondary btn-sm"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
-                <button class="btn btn-danger btn-sm" th:onclick="|supprimer(${ville.id})|"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
+                <a class="btn btn-secondary btn-sm" th:href="@{'/ville/edit/' + ${ ville.id } }">
+                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                </a>
+                <button class="btn btn-danger btn-sm" th:onclick="|supprimer( 'ville' , ${ville.id} )|">
+                    <i class="fa fa-trash-o" aria-hidden="true"></i>
+                </button>
             </td>
         </tr>
         </tbody>
     </table>
+    <span class="badge btn-secondary mb-3 float-end" style="align-items: end" th:text="| ${totalItems} ville(s) trouvée(s) |"></span>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <li class="page-item" th:each="i : ${#numbers.sequence(1 , totalPages)}">
+                <a class="page-link" th:text="${i}" th:classappend="(${currentPage}==${i}) ?'active' : ''" th:href="@{'/ville/' + ${i}}" ></a>
+            </li>
+        </ul>
+    </nav>
 </main>
 
 <footer th:include="~{ fragments/footer::#footer }"></footer>

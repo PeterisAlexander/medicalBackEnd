@@ -16,11 +16,11 @@ import java.util.regex.Pattern;
 public class PatientService {
 
     private PatientRepository pr;
-    private VilleRepository vr;
+    //private VilleRepository vr;
 
-    public PatientService(PatientRepository pr, VilleRepository vr ){
+    public PatientService(PatientRepository pr){
         this.pr = pr;
-        this.vr = vr;
+        //this.vr = vr;
     }
 
     public Iterable<PatientEntity> findAll() {
@@ -77,10 +77,10 @@ public class PatientService {
             throw new InvalidObjectException("Ville invalide");
         } */
 
-        VilleEntity ve = vr.findById(p.getVille().getId()).orElseGet( null );
-        if( ve == null ){
-            throw new InvalidObjectException("Ville invalide");
-        }
+        //VilleEntity ve = vr.findById(p.getVille().getId()).orElseGet( null );
+        //if( ve == null ){
+        //    throw new InvalidObjectException("Ville invalide");
+        //}
     }
 
     public void addPatient(PatientEntity p) throws InvalidObjectException {

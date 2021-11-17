@@ -4,6 +4,9 @@ package fr.m2i.medical.services;
 import fr.m2i.medical.entities.VilleEntity;
 import fr.m2i.medical.repositories.VilleRepository;
 import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.io.InvalidObjectException;
@@ -23,8 +26,16 @@ public class VilleService {
         return vr.findAll();
     }
 
-    public Iterable<VilleEntity> findVileByNom(String search) {
-        return vr.findByNom(search);
+    public Page<VilleEntity> listAll(int pageNumber) {
+        Pageable pageable = PageRequest.of(pageNumber - 1, 5);
+        return vr.findAll(pageable);
+    }
+
+    public Iterable<VilleEntity> findAll(String search) {
+        if( search != null && search.length() > 0 ){
+            return vr.findByNomContains(search);
+        }
+        return vr.findAll();
     }
 
     private void checkVille( VilleEntity v ) throws InvalidObjectException {
@@ -40,7 +51,7 @@ public class VilleService {
     }
 
     public VilleEntity findVille(int id) {
-        return vr.findById(id).get();
+        return (VilleEntity) vr.findById(id).get();
     }
 
     public void addVille( VilleEntity v ) throws InvalidObjectException {
@@ -55,7 +66,7 @@ public class VilleService {
     public void editVille( int id , VilleEntity v) throws InvalidObjectException , NoSuchElementException {
         checkVille(v);
         try{
-            VilleEntity vExistante = vr.findById(id).get();
+            VilleEntity vExistante = (VilleEntity) vr.findById(id).get();
 
             vExistante.setCodePostal( v.getCodePostal() );
             vExistante.setNom( v.getNom() );
@@ -67,6 +78,4 @@ public class VilleService {
         }
 
     }
-
-
 }
