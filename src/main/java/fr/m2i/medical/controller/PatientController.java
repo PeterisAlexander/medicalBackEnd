@@ -26,10 +26,16 @@ public class PatientController {
 
     // http://localhost:8080/patient
     @GetMapping(value = "")
-    public String list( Model model ){
-        model.addAttribute("patients" , ps.findAll() );
+    public String list( Model model, String search){
+        if(search != "" | search != null) {
+            model.addAttribute("patients" , ps.findPatientByNom(search) );
+        } else {
+            model.addAttribute("patients" , ps.findAll() );
+        }
         return "patient/list_patient";
     }
+
+
 
     // http://localhost:8080/patient/add
     @GetMapping(value = "/add")

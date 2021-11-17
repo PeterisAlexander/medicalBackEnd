@@ -7,6 +7,7 @@ import fr.m2i.medical.repositories.VilleRepository;
 import org.springframework.stereotype.Service;
 
 import java.io.InvalidObjectException;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,6 +29,10 @@ public class PatientService {
 
     public PatientEntity findPatient(int id) {
         return pr.findById(id).get();
+    }
+
+    public Iterable<PatientEntity> findPatientByNom(String search) {
+        return pr.findByNom(search);
     }
 
     public void delete(int id) {

@@ -6,9 +6,15 @@
 <header class="mb-5" th:include="~{ fragments/header::#header }"></header>
 
 <main class="container">
-    <h1>Liste des patients</h1>
+    <h1>Liste des villes</h1>
 
-    <a href="/ville/add" class="btn btn-primary">Ajouter une ville</a>
+    <form th:action="@{/ville}" method="get" style="display: flex; justify-content: space-between; align-items: center">
+        <a href="/ville/add" class="btn btn-primary">Ajouter une ville</a>
+        <div class="input-group" style="width: auto">
+            <input type="text" class="form-control" placeholder="Chercher votre ville..." name="search">
+            <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Search</button>
+        </div>
+    </form>
 
     <table class="table table-striped">
         <thead>

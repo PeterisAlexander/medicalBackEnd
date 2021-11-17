@@ -23,6 +23,10 @@ public class VilleService {
         return vr.findAll();
     }
 
+    public Iterable<VilleEntity> findVileByNom(String search) {
+        return vr.findByNom(search);
+    }
+
     private void checkVille( VilleEntity v ) throws InvalidObjectException {
 
         if( v.getNom().length() <= 2  ){
@@ -63,4 +67,6 @@ public class VilleService {
         }
 
     }
+
+
 }

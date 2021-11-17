@@ -8,8 +8,13 @@
 <main class="container">
     <h1>Liste des patients</h1>
 
-    <a href="/patient/add" class="btn btn-primary">Ajouter un patient</a>
-
+    <form th:action="@{/patient}" method="get" style="display: flex; justify-content: space-between; align-items: center">
+        <a href="/patient/add" class="btn btn-primary">Ajouter un patient</a>
+        <div class="input-group" style="width: auto">
+            <input type="text" class="form-control" placeholder="Chercher votre patient..." name="search">
+            <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Search</button>
+        </div>
+    </form>
     <table class="table table-striped">
         <thead>
         <tr>

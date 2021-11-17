@@ -23,8 +23,12 @@ public class VilleController {
 
     // http://localhost:8080/ville
     @GetMapping(value = "")
-    public String list( Model model ){
-        model.addAttribute("villes" , vs.findAll() );
+    public String list( Model model, String search ){
+        if(!(search != "" | search != null)) {
+            model.addAttribute("villes" , vs.findVileByNom(search) );
+        } else {
+            model.addAttribute("villes", vs.findAll());
+        }
         return "ville/list_ville";
     }
 
