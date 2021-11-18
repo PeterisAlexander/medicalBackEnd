@@ -4,28 +4,20 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "ville", schema = "medical5", catalog = "")
+@Table(name = "ville", schema = "medical", catalog = "")
 public class VilleEntity {
     private int id;
     private String nom;
     private String codePostal;
     private String pays;
 
-    public VilleEntity() {
-
-    }
-
-    public VilleEntity(int id, String nom, String codePostal, String pays) {
-        this.id = id;
-        this.nom = nom;
-        this.codePostal = codePostal;
-        this.pays = pays;
-    }
-
     public VilleEntity(String nom, String codePostal, String pays) {
         this.nom = nom;
         this.codePostal = codePostal;
         this.pays = pays;
+    }
+
+    public VilleEntity() {
     }
 
     @Id

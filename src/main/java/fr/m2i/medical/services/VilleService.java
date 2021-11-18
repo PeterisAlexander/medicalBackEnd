@@ -3,14 +3,12 @@ package fr.m2i.medical.services;
 
 import fr.m2i.medical.entities.VilleEntity;
 import fr.m2i.medical.repositories.VilleRepository;
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.io.InvalidObjectException;
-import java.sql.SQLException;
 import java.util.NoSuchElementException;
 
 @Service
@@ -59,7 +57,7 @@ public class VilleService {
         vr.save(v);
     }
 
-    public void delete(int id) throws ConstraintViolationException {
+    public void delete(int id) {
         vr.deleteById(id);
     }
 

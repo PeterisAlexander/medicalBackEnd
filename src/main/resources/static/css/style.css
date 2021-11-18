@@ -1,0 +1,15 @@
+body {
+    padding-bottom: 50px
+}
+
+.alert {
+    position: fixed;
+    width: 25%;
+    left: 35%;
+    text-align: center;
+}
+
+.active {
+    color: white;
+    background-color: #0d6efd;
+}

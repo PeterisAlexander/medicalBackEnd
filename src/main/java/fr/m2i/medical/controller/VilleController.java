@@ -2,18 +2,14 @@ package fr.m2i.medical.controller;
 
 
 import fr.m2i.medical.entities.VilleEntity;
-import fr.m2i.medical.repositories.VilleRepository;
 import fr.m2i.medical.services.VilleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.InvalidObjectException;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -24,13 +20,10 @@ public class VilleController {
     @Autowired
     private VilleService vs;
 
-    private VilleRepository vr;
-
     // http://localhost:8080/ville
     @GetMapping(value = "")
     public String list(Model model, HttpServletRequest request){
         String search = request.getParameter("search");
-        Iterable<VilleEntity> villas = vs.findAll(search);
         model.addAttribute( "search" , search );
 
         model.addAttribute( "error" , request.getParameter("error") );
@@ -38,7 +31,6 @@ public class VilleController {
 
         return listByPage(model, 1);
     }
-
 
     @GetMapping("/{pageNumber}")
     public String listByPage(Model model, @PathVariable("pageNumber") int currentPage) {
@@ -51,22 +43,27 @@ public class VilleController {
         model.addAttribute("currentPage", currentPage);
 
         List<VilleEntity> listVilles = page.getContent();
-        model.addAttribute("listVilles", listVilles);
+        model.addAttribute("villes", listVilles);
 
         return "ville/list_ville";
     }
 
-
+    // http://localhost:8080/ville/add
+    @GetMapping(value = "/add")
+    public String add( Model model ){
+        model.addAttribute("ville" , new VilleEntity() );
+        return "ville/addEdit_ville";
+    }
 
     @PostMapping(value = "/add")
-    public String addPost( Model model, HttpServletRequest request){
+    public String addPost( HttpServletRequest request , Model model ){
         // Récupération des paramètres envoyés en POST
         String nom = request.getParameter("nom");
-        String pays = request.getParameter("pays");
         String codePostal = request.getParameter("codePostal");
+        String pays = request.getParameter("pays");
 
         // Préparation de l'entité à sauvegarder
-        VilleEntity v = new VilleEntity( 0 , nom , codePostal, pays );
+        VilleEntity v = new VilleEntity( nom , codePostal , pays );
 
         // Enregistrement en utilisant la couche service qui gère déjà nos contraintes
         try{
@@ -80,20 +77,15 @@ public class VilleController {
         return "redirect:/ville?success=true";
     }
 
-    @GetMapping(value = "/edit/{id}")
-    public String edit( Model model , @PathVariable int id ){
-        //... récupérer le ville à modifier et le passer à la vue
-        model.addAttribute("ville" , vs.findVille(id) );
-        return "ville/addEdit_ville";
-    }
+    @RequestMapping( method = { RequestMethod.GET , RequestMethod.POST} , value = "/edit/{id}" )
+    public String editGetPost( Model model , @PathVariable int id ,  HttpServletRequest request ){
+        System.out.println( "Add Edit Ville" + request.getMethod() );
 
-    @PostMapping(value = "/edit/{id}")
-    public String editPost( Model model, HttpServletRequest request, @PathVariable int id) throws InvalidObjectException {
-        //... récupérer la ville envoyé depuis le form et enregistrer en bd
         if( request.getMethod().equals("POST") ){
+            // Récupération des paramètres envoyés en POST
             String nom = request.getParameter("nom");
+            String codePostal = request.getParameter("codePostal") ;
             String pays = request.getParameter("pays");
-            String codePostal = request.getParameter("codePostal");
 
             // Préparation de l'entité à sauvegarder
             VilleEntity v = new VilleEntity( nom , codePostal , pays );
@@ -121,7 +113,7 @@ public class VilleController {
     }
 
     @GetMapping(value = "/delete/{id}")
-    public String delete(@PathVariable int id) {
+    public String delete( @PathVariable int id ){
         String message = "?success=true";
         try{
             vs.delete(id);
@@ -131,12 +123,12 @@ public class VilleController {
         return "redirect:/ville"+message;
     }
 
-    public VilleService getVs() {
+    public VilleService getVservice() {
         return vs;
     }
 
-    public void setVs(VilleService vs) {
-        this.vs = vs;
+    public void setVservice(VilleService vservice) {
+        this.vs = vservice;
     }
 
 }

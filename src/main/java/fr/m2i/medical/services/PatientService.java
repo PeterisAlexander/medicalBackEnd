@@ -4,6 +4,9 @@ import fr.m2i.medical.entities.PatientEntity;
 import fr.m2i.medical.entities.VilleEntity;
 import fr.m2i.medical.repositories.PatientRepository;
 import fr.m2i.medical.repositories.VilleRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.io.InvalidObjectException;
@@ -16,24 +19,34 @@ import java.util.regex.Pattern;
 public class PatientService {
 
     private PatientRepository pr;
-    //private VilleRepository vr;
+    private VilleRepository vr;
 
-    public PatientService(PatientRepository pr){
+    public PatientService(PatientRepository pr, VilleRepository vr){
         this.pr = pr;
-        //this.vr = vr;
+        this.vr = vr;
     }
 
     public Iterable<PatientEntity> findAll() {
         return pr.findAll();
     }
 
-    public PatientEntity findPatient(int id) {
-        return pr.findById(id).get();
+    public Iterable<PatientEntity> findAll( String search ) {
+        if( search != null && search.length() > 0 ){
+            return pr.findByNomContainsOrPrenomContains( search , search );
+        }
+        return pr.findAll();
     }
 
-    public Iterable<PatientEntity> findPatientByNom(String search) {
-        return pr.findByNom(search);
+    public Page<PatientEntity> listAll(int pageNumber) {
+        Pageable pageable = PageRequest.of(pageNumber - 1, 5);
+        return pr.findAll(pageable);
     }
+
+    public PatientEntity findPatient(int id) {
+        return (PatientEntity) pr.findById(id).get();
+    }
+
+    //public Iterable<PatientEntity> findPatientByNom(String search) { return pr.findByNomContains(search);}
 
     public void delete(int id) {
         pr.deleteById(id);
@@ -77,10 +90,10 @@ public class PatientService {
             throw new InvalidObjectException("Ville invalide");
         } */
 
-        //VilleEntity ve = vr.findById(p.getVille().getId()).orElseGet( null );
-        //if( ve == null ){
-        //    throw new InvalidObjectException("Ville invalide");
-        //}
+        VilleEntity ve = (VilleEntity) vr.findById(p.getVille().getId()).orElseGet( null );
+        if( ve == null ){
+            throw new InvalidObjectException("Ville invalide");
+        }
     }
 
     public void addPatient(PatientEntity p) throws InvalidObjectException {
@@ -95,7 +108,7 @@ public class PatientService {
         PatientEntity pp = pe.orElse( null );*/
 
         try{
-            PatientEntity pExistant = pr.findById(id).get();
+            PatientEntity pExistant = (PatientEntity) pr.findById(id).get();
 
             pExistant.setPrenom( p.getPrenom() );
             pExistant.setNom( p.getNom() );
@@ -110,7 +123,5 @@ public class PatientService {
         }catch ( NoSuchElementException e ){
             throw e;
         }
-
-        pr.save(p);
     }
 }
